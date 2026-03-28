@@ -11,6 +11,8 @@ steps:
     ref: contracts
   - action: run_subroutine
     ref: urgent
+  - action: run_subroutine
+    ref: deliveries
   - action: summarize
     output: grouped results by subroutine
 
@@ -93,3 +95,29 @@ subroutines:
         variants: [výzva, vyzva, výzvy, vyzvy, výzvě, vyzvě]
       - base: posledni
         variants: [poslední, posledni]
+      - base: neuhrazeny
+        variants: [neuhrazený, neuhrazená, neuhrazena, neuhrazené, neuhrazene, neuhrazenou]
+
+  deliveries:
+    description: Find delivery and parcel status emails
+    filter:
+      max_age_months: 1
+    keywords:
+      - base: PPL
+        variants: [PPL]
+      - base: Balikovna
+        variants: [Balíkovna, Balikovna]
+      - base: AlzaBox
+        variants: [AlzaBox]
+      - base: DPD
+        variants: [DPD]
+      - base: zasilka
+        variants: [zásilka, zasilka, zásilku, zasilku, zásilky, zasilky]
+      - base: doruceni
+        variants: [doručení, doruceni, doručeno, doruceno, doručena, dorucena, doručit, dorucit]
+      - base: vyzvednout
+        variants: [vyzvednout, vyzvedněte, vyzvednete, vyzvednutí, vyzvednutí]
+      - base: expedovano
+        variants: [expedováno, expedovano, expedice, odesláno, odeslano]
+      - base: tracking
+        variants: [tracking, sledování, sledovani, sledovat]
