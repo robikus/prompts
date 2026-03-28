@@ -21,18 +21,46 @@ subroutines:
     filter:
       max_age_months: 2
     keywords:
-  - base: faktura
-    variants: [faktura, faktury, faktuře, fakturu, fakturo]
-  - base: neuhrazeny
-    variants: [neuhrazený, neuhrazená, neuhrazena, neuhrazené, neuhrazene, neuhrazenou]
-  - base: nezaplaceno
-    variants: [nezaplaceno, nezaplacená, nezaplacena, nezaplacené, nezaplacene]
-  - base: zaplatit
-    variants: [zaplatit, zaplaťte, zaplatte, zaplacení, zaplaceni, zaplatíte, zaplatite]
-  - base: uhradit
-    variants: [uhradit, uhraďte, uhradte, uhrazeno, uhrazení, uhrazeni]
-  - base: upominka
-    variants: [upomínka, upominka, upomínky, upominky, upomínce, upomince]
+      - base: faktura
+        variants: [faktura, faktury, faktuře, fakturu, fakturo]
+      - base: neuhrazeny
+        variants: [neuhrazený, neuhrazená, neuhrazena, neuhrazené, neuhrazene, neuhrazenou]
+      - base: nezaplaceno
+        variants: [nezaplaceno, nezaplacená, nezaplacena, nezaplacené, nezaplacene]
+      - base: zaplatit
+        variants: [zaplatit, zaplaťte, zaplatte, zaplacení, zaplaceni, zaplatíte, zaplatite]
+      - base: uhradit
+        variants: [uhradit, uhraďte, uhradte, uhrazeno, uhrazení, uhrazeni]
+      - base: upominka
+        variants: [upomínka, upominka, upomínky, upominky, upomínce, upomince]
+      - base: dluh
+        variants: [dluh, dluhu, dluhy, dluhů]
+      - base: pohledavka
+        variants: [pohledávka, pohledavka, pohledávky, pohledavky, pohledávce, pohledavce]
+      - base: penale
+        variants: [penále, penale]
+      - base: pokuta
+        variants: [pokuta, pokuty, pokutě, pokutu]
+      - base: sankce
+        variants: [sankce, sankcí, sankci]
+      - base: urok
+        variants: [úrok, urok, úroky, uroky, úroku, uroku]
+      - base: splatnost
+        variants: [splatnost, splatnosti, splatnou]
+      - base: termin
+        variants: [termín, termin, termínu, terminu]
+      - base: upozorneni
+        variants: [upozornění, upozorneni, upozorňujeme, upozornujeme]
+      - base: pripominka
+        variants: [připomínka, pripominka, připomínky, pripominky]
+      - base: vyzva
+        variants: [výzva, vyzva, výzvy, vyzvy, výzvě, vyzvě]
+      - base: posledni
+        variants: [poslední, posledni]
+      - base: ihned
+        variants: [ihned]
+      - base: prodlouzeni
+        variants: [prodloužení, prodlouzeni, prodloužit, prodlouzit]
 
   contracts:
     description: Find contract-related emails
@@ -41,15 +69,27 @@ subroutines:
     keywords:
       - base: smlouva
         variants: [smlouva, smlouvy, smlouvě, smlouvu, smlouvou]
+      - base: dohoda
+        variants: [dohoda, dohody, dohodě, dohodu, dohodou]
+      - base: dodatek
+        variants: [dodatek, dodatku, dodatkem, dodatky]
+      - base: objednavka
+        variants: [objednávka, objednavka, objednávky, objednavky, objednávce, objednavce]
 
   urgent:
     description: Find urgent emails
     filter:
       max_age_months: 2
     keywords:
-  - base: urgence
-    variants: [urgence, urgentní, urgentni]
-  - base: okamzite
-    variants: [okamžitě, okamzite, okamžitý, okamzity, okamžitá, okamzita, okamžité, okamzite]
-  - base: neprodleně
-    variants: [neprodlene, neprodleně, neprodlené, neprodlene]
+      - base: urgence
+        variants: [urgence, urgentní, urgentni]
+      - base: okamzite
+        variants: [okamžitě, okamzite, okamžitý, okamzity, okamžitá, okamzita, okamžité, okamzite]
+      - base: neprodlene
+        variants: [neprodleně, neprodlene, neprodlené, neprodlene]
+      - base: ihned
+        variants: [ihned]
+      - base: vyzva
+        variants: [výzva, vyzva, výzvy, vyzvy, výzvě, vyzvě]
+      - base: posledni
+        variants: [poslední, posledni]
