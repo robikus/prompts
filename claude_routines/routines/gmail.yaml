@@ -10,6 +10,9 @@ steps:
       - action: navigate
         url: https://mail.google.com
       - action: run_subroutine
+        ref: cleanup
+        condition: account == "polakovic.robert@gmail.com"
+      - action: run_subroutine
         ref: unpaid
       - action: run_subroutine
         ref: contracts
@@ -18,9 +21,21 @@ steps:
       - action: run_subroutine
         ref: deliveries
   - action: summarize
-    output: grouped results by account and subroutine
+    output: >
+      For each account, show one combined table with columns:
+      Category | Sender | Subject | Date
+      Sort by date descending. Mark urgent/overdue rows with ⚠️.
 
 subroutines:
+
+  cleanup:
+    description: Delete marketing emails from known spam senders
+    actions:
+      - action: delete_by_sender
+        senders:
+          - "@newarrival.aliexpress.com"
+          - "@deals.aliexpress.com"
+          - "@selections.aliexpress.com"
 
   unpaid:
     description: Find unpaid invoices and payment reminders
