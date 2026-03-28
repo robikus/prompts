@@ -1,5 +1,5 @@
 name: gmail
-description: Check recent emails for important keywords across multiple accounts
+description: Check recent emails for important keywords across multiple accounts and send summary
 trigger: "gmail"
 accounts:
   - polakovic.robert@gmail.com
@@ -20,17 +20,24 @@ steps:
         ref: urgent
       - action: run_subroutine
         ref: deliveries
+      - action: send_email
+        to: "{{account}}"
+        from: "{{account}}"
+        subject: "📋 Gmail summary — {{date}}"
+        body_format: html
+        body: >
+          Generate an HTML email with the subject "Gmail summary — {{date}}".
+          Include a single table with columns: Category | Sender | Subject | Date.
+          Include ALL matching emails — do not limit, truncate or summarise.
+          Mark overdue/urgent rows with ⚠️ and highlight them in light red (#fff0f0).
+          Categories: Unpaid, Contracts, Urgent, Delivery.
+          Sort by date descending.
+          Exclude pure promotional newsletters (Allegro vouchers, Reas.cz property
+          alerts, Alkohol.cz, Bulios, Coinmate newsletters etc.) but keep everything
+          related to invoices, payments, contracts, deliveries and security alerts.
+          Use clean readable HTML table styling.
   - action: summarize
-    output: >
-      For each account show a single combined table with columns:
-      Category | Sender | Subject | Date.
-      Include ALL matching emails — do not limit, truncate or summarise.
-      Mark overdue/urgent rows with ⚠️.
-      Categories: Unpaid, Contracts, Urgent, Delivery.
-      Sort by date descending within each account.
-      Exclude pure promotional newsletters (Allegro vouchers, Reas.cz property
-      alerts, Alkohol.cz, Bulios, Coinmate newsletters etc.) but keep everything
-      related to invoices, payments, contracts, deliveries and security alerts.
+    output: confirm summary emails sent, then show the same tables in chat
 
 subroutines:
 
