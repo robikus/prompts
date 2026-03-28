@@ -1,0 +1,16 @@
+name: gmail
+description: Check recent emails for important keywords
+trigger: "gmail"
+steps:
+  - action: navigate
+    url: https://mail.google.com
+    account: polakovic.robert@gmail.com
+  - action: filter
+    max_age_months: 6
+  - action: search_keywords
+    keywords:
+      - faktura
+      - urgence
+      - nezaplaceno
+  - action: summarize
+    output: list of matching emails with sender, date, subject
