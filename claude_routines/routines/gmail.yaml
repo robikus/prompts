@@ -22,9 +22,15 @@ steps:
         ref: deliveries
   - action: summarize
     output: >
-      For each account, show one combined table with columns:
-      Category | Sender | Subject | Date
-      Sort by date descending. Mark urgent/overdue rows with ⚠️.
+      For each account show a single combined table with columns:
+      Category | Sender | Subject | Date.
+      Include ALL matching emails — do not limit, truncate or summarise.
+      Mark overdue/urgent rows with ⚠️.
+      Categories: Unpaid, Contracts, Urgent, Delivery.
+      Sort by date descending within each account.
+      Exclude pure promotional newsletters (Allegro vouchers, Reas.cz property
+      alerts, Alkohol.cz, Bulios, Coinmate newsletters etc.) but keep everything
+      related to invoices, payments, contracts, deliveries and security alerts.
 
 subroutines:
 
