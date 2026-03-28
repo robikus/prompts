@@ -1,16 +1,55 @@
 name: gmail
-description: Check recent emails for important keywords
+description: Check recent emails for important keywords, grouped by category
 trigger: "gmail"
+account: polakovic.robert@gmail.com
 steps:
   - action: navigate
     url: https://mail.google.com
-    account: polakovic.robert@gmail.com
-  - action: filter
-    max_age_months: 6
-  - action: search_keywords
-    keywords:
-      - faktura
-      - urgence
-      - nezaplaceno
+  - action: run_subroutine
+    ref: unpaid
+  - action: run_subroutine
+    ref: contracts
+  - action: run_subroutine
+    ref: urgent
   - action: summarize
-    output: list of matching emails with sender, date, subject
+    output: grouped results by subroutine
+
+subroutines:
+
+  unpaid:
+    description: Find unpaid invoices and payment reminders
+    filter:
+      max_age_months: 2
+    keywords:
+  - base: faktura
+    variants: [faktura, faktury, faktuře, fakturu, fakturo]
+  - base: neuhrazeny
+    variants: [neuhrazený, neuhrazená, neuhrazena, neuhrazené, neuhrazene, neuhrazenou]
+  - base: nezaplaceno
+    variants: [nezaplaceno, nezaplacená, nezaplacena, nezaplacené, nezaplacene]
+  - base: zaplatit
+    variants: [zaplatit, zaplaťte, zaplatte, zaplacení, zaplaceni, zaplatíte, zaplatite]
+  - base: uhradit
+    variants: [uhradit, uhraďte, uhradte, uhrazeno, uhrazení, uhrazeni]
+  - base: upominka
+    variants: [upomínka, upominka, upomínky, upominky, upomínce, upomince]
+
+  contracts:
+    description: Find contract-related emails
+    filter:
+      max_age_months: 2
+    keywords:
+      - base: smlouva
+        variants: [smlouva, smlouvy, smlouvě, smlouvu, smlouvou]
+
+  urgent:
+    description: Find urgent emails
+    filter:
+      max_age_months: 2
+    keywords:
+  - base: urgence
+    variants: [urgence, urgentní, urgentni]
+  - base: okamzite
+    variants: [okamžitě, okamzite, okamžitý, okamzity, okamžitá, okamzita, okamžité, okamzite]
+  - base: neprodleně
+    variants: [neprodlene, neprodleně, neprodlené, neprodlene]
