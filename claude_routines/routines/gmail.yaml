@@ -1,20 +1,24 @@
 name: gmail
-description: Check recent emails for important keywords, grouped by category
+description: Check recent emails for important keywords across multiple accounts
 trigger: "gmail"
-account: polakovic.robert@gmail.com
+accounts:
+  - polakovic.robert@gmail.com
+  - katerina.chuda2@gmail.com
 steps:
-  - action: navigate
-    url: https://mail.google.com
-  - action: run_subroutine
-    ref: unpaid
-  - action: run_subroutine
-    ref: contracts
-  - action: run_subroutine
-    ref: urgent
-  - action: run_subroutine
-    ref: deliveries
+  - action: for_each_account
+    steps:
+      - action: navigate
+        url: https://mail.google.com
+      - action: run_subroutine
+        ref: unpaid
+      - action: run_subroutine
+        ref: contracts
+      - action: run_subroutine
+        ref: urgent
+      - action: run_subroutine
+        ref: deliveries
   - action: summarize
-    output: grouped results by subroutine
+    output: grouped results by account and subroutine
 
 subroutines:
 
