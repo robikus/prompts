@@ -175,3 +175,9 @@ subroutines:
         variants: [expedováno, expedovano, expedice, odesláno, odeslano]
       - base: tracking
         variants: [tracking, sledování, sledovani, sledovat]
+      - base: Rohlík
+        variants: [todo]
+      - base: Wolt
+        variants: [todo]
+      - base: Foodora
+        variants: [todo]
