@@ -1,9 +1,20 @@
 name: gmail
-description: Check recent emails for important keywords across multiple accounts and send summary
+description: >
+  Scans two Gmail accounts for important emails (unpaid invoices, contracts,
+  urgent messages, deliveries), deletes AliExpress marketing from Robert's
+  account, then sends a formatted HTML summary email to each account via
+  Google Apps Script webhook running under polakovic.robert@gmail.com.
 trigger: "gmail"
+
+webhook:
+  gmail_summary: "https://script.google.com/macros/s/AKfycbzy4lt0Ra6b4LXbAmWEtQ8Vb7hCINdz5XSdvc9TtP2DAFfeJo6FF7D1JYfrX4Bl8mgEQQ/exec"
+  secret: "stored in Claude memory — not in this file"
+  sender_account: polakovic.robert@gmail.com
+
 accounts:
   - polakovic.robert@gmail.com
   - katerina.chuda2@gmail.com
+
 steps:
   - action: for_each_account
     steps:
@@ -20,29 +31,40 @@ steps:
         ref: urgent
       - action: run_subroutine
         ref: deliveries
-      - action: send_email
+      - action: send_via_webhook
+        note: >
+          Always called from script.google.com tab — Gmail CSP blocks
+          cross-origin fetch to script.google.com from within Gmail pages.
+          Webhook runs under polakovic.robert@gmail.com regardless of
+          which account is being summarised. Secret stored in Claude memory.
+        from_page: "https://script.google.com/home"
+        url: "{{webhook.gmail_summary}}"
+        secret: "{{memory.gmail_webhook_secret}}"
+        from: "{{webhook.sender_account}}"
         to: "{{account}}"
-        from: "{{account}}"
-        subject: "📋 Gmail summary — {{date}}"
+        subject: "Gmail Summary — {{account}} — {{date}}"
         body_format: html
         body: >
-          Generate an HTML email with the subject "Gmail summary — {{date}}".
-          Include a single table with columns: Category | Sender | Subject | Date.
-          Include ALL matching emails — do not limit, truncate or summarise.
-          Mark overdue/urgent rows with ⚠️ and highlight them in light red (#fff0f0).
-          Categories: Unpaid, Contracts, Urgent, Delivery.
-          Sort by date descending.
-          Exclude pure promotional newsletters (Allegro vouchers, Reas.cz property
-          alerts, Alkohol.cz, Bulios, Coinmate newsletters etc.) but keep everything
-          related to invoices, payments, contracts, deliveries and security alerts.
-          Use clean readable HTML table styling.
+          Build a single HTML email with sections: UNPAID/INVOICES, CONTRACTS,
+          URGENT, DELIVERIES. Each section has a coloured header and a table
+          with columns: Sender | Subject | Date. Highlight overdue/urgent rows
+          in light red. Include all matching emails — do not truncate.
+          Exclude pure promotional newsletters (Allegro vouchers, Reas.cz,
+          Alkohol.cz, Bulios, Coinmate etc.).
+          IMPORTANT: Use ASCII-safe text only in the HTML body — no emoji,
+          no Czech diacritics — they cause rendering issues in email clients.
   - action: summarize
-    output: confirm summary emails sent, then show the same tables in chat
+    output: >
+      Confirm summary emails sent (Robert to himself, Robert to Katerina),
+      then show the same tables in chat — one combined table per account
+      with columns: Category | Sender | Subject | Date.
+      Mark overdue/urgent rows with ⚠️. Chat output CAN use emoji and
+      Czech characters.
 
 subroutines:
 
   cleanup:
-    description: Delete marketing emails from known spam senders
+    description: Delete AliExpress marketing emails from Robert's inbox
     actions:
       - action: delete_by_sender
         senders:
