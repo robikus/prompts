@@ -4,7 +4,7 @@ Routine definitions for Claude in Chrome automation.
 Triggered by typing the routine name in a Claude conversation.
 
 Base URL:
-`https://raw.githubusercontent.com/robikus/prompts/refs/heads/main/claude_routines/routines/{routine_name}.yaml`
+`https://raw.githubusercontent.com/robikus/prompts/refs/heads/main/claude_routines/routines/gmail.yaml`
 
 ---
 
