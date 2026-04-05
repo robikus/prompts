@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'google_cloud_functions/gmail/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
