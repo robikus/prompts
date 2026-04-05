@@ -1,0 +1,33 @@
+name: Deploy to Cloud Functions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'google_cloud_functions/gmail/**'   # only trigger when this folder changes
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - id: deploy
+        uses: google-github-actions/deploy-cloud-functions@v4
+        with:
+          name: hello
+          runtime: python312
+          source_dir: my-function
+          region: us-central1
+
+      - name: Print URL
+        run: echo "Function URL: ${{ steps.deploy.outputs.url }}"
