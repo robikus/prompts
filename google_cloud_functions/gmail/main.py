@@ -172,13 +172,3 @@ def send_summary(service, to_account, html_body):
     raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
     service.users().messages().send(userId="me", body={"raw": raw}).execute()
     print(f"Summary sent to {to_account}")
-```
-
----
-
-### `requirements.txt`
-```
-anthropic>=0.25.0
-google-auth>=2.0.0
-google-auth-httplib2>=0.2.0
-google-api-python-client>=2.0.0
