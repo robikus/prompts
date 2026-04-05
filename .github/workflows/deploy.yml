@@ -22,15 +22,31 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-      - id: deploy
-        uses: google-github-actions/deploy-cloud-functions@v4
-        with:
-          name: gmail-routine
-          runtime: python312
-          source_dir: google_cloud_functions/gmail
-          entry_point: run_gmail_routine
-          region: us-central1
-          env_vars: 'ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }},GOOGLE_SERVICE_ACCOUNT_JSON=${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}'
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Write env vars file
+        run: |
+          cat > /tmp/env.yaml <<EOF
+          ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
+          GOOGLE_SERVICE_ACCOUNT_JSON: $(echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}' | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
+          EOF
+
+      - name: Deploy
+        run: |
+          gcloud functions deploy gmail-routine \
+            --gen2 \
+            --runtime=python312 \
+            --region=us-central1 \
+            --source=google_cloud_functions/gmail \
+            --entry-point=run_gmail_routine \
+            --trigger-http \
+            --no-allow-unauthenticated \
+            --env-vars-file=/tmp/env.yaml
 
       - name: Print URL
-        run: echo "Function URL ${{ steps.deploy.outputs.url }}"
+        run: |
+          gcloud functions describe gmail-routine \
+            --gen2 \
+            --region=us-central1 \
+            --format="value(serviceConfig.uri)"
