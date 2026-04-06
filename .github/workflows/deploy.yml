@@ -26,11 +26,19 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Write env vars file
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: |
-          cat > /tmp/env.yaml <<EOF
-          ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
-          GOOGLE_SERVICE_ACCOUNT_JSON: $(echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}' | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
-          EOF
+          python3 -c "
+          import os, json, yaml
+          env = {
+            'ANTHROPIC_API_KEY': os.environ['ANTHROPIC_API_KEY'],
+            'GOOGLE_SERVICE_ACCOUNT_JSON': os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'],
+          }
+          with open('/tmp/env.yaml', 'w') as f:
+            yaml.dump(env, f, default_flow_style=False)
+          "
 
       - name: Deploy
         run: |
