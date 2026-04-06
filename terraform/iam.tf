@@ -25,16 +25,7 @@ resource "google_service_account" "scheduler" {
   depends_on = [google_project_service.apis]
 }
 
-# Allow the scheduler SA to invoke the Cloud Function (Gen 2 uses Cloud Run)
-resource "google_cloudfunctions2_function_iam_member" "scheduler_invoker" {
-  project        = var.project_id
-  location       = var.region
-  cloud_function = google_cloudfunctions2_function.gmail_routine.name
-  role           = "roles/cloudfunctions.invoker"
-  member         = "serviceAccount:${google_service_account.scheduler.email}"
-}
-
-# Gen 2 functions run on Cloud Run — also grant run.invoker
+# Gen 2 functions run on Cloud Run — grant run.invoker to the scheduler SA
 resource "google_cloud_run_service_iam_member" "scheduler_invoker" {
   project  = var.project_id
   location = var.region
