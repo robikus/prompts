@@ -11,3 +11,7 @@ terraform/terraform.tfvars
 __pycache__/
 *.pyc
 .env
+
+# OAuth — never commit these
+credentials.json
+token_*.json

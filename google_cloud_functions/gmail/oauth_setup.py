@@ -29,4 +29,4 @@ def setup_oauth(account_hint="robert"):
 
 if __name__ == "__main__":
     setup_oauth("robert")
-    # Run again for katerina: setup_oauth("katerina")
+    setup_oauth("katerina")
