@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import anthropic
-from google.oauth2 import service_account
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 # ── Config ────────
@@ -63,28 +63,15 @@ def run_gmail_routine(request=None):
 
 # ── Gmail service ─────────────────────────────────────────────────────────────
 
-def get_gmail_service(account):
-    """
-    Authenticate via a service account with domain-wide delegation.
-    Both Robert and Katerina must be in the same Google Workspace domain,
-    OR use OAuth2 credentials per account (see OAUTH_NOTE below).
-    """
-    creds_json = json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
-    scopes = ["https://www.googleapis.com/auth/gmail.modify"]
-    credentials = service_account.Credentials.from_service_account_info(
-        creds_json, scopes=scopes
-    ).with_subject(account)
-    return build("gmail", "v1", credentials=credentials)
+TOKEN_ENV = {
+    "polakovic.robert@gmail.com": "GMAIL_TOKEN_ROBERT",
+    "katerina.chuda2@gmail.com":  "GMAIL_TOKEN_KATERINA",
+}
 
-"""
-OAUTH_NOTE:
-If you are NOT on Google Workspace (i.e. plain @gmail.com accounts),
-service accounts with domain-wide delegation don't work.
-Use OAuth2 instead:
-  - Run oauth_setup.py (below) once per account to generate token files
-  - Store token JSON in environment variables or Secret Manager
-  - Load with google.oauth2.credentials.Credentials.from_authorized_user_info()
-"""
+def get_gmail_service(account):
+    token_data = json.loads(os.environ[TOKEN_ENV[account]])
+    credentials = Credentials.from_authorized_user_info(token_data)
+    return build("gmail", "v1", credentials=credentials)
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 
