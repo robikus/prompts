@@ -25,23 +25,6 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Write env vars file
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_TOKEN_ROBERT: ${{ secrets.GMAIL_TOKEN_ROBERT }}
-          GMAIL_TOKEN_KATERINA: ${{ secrets.GMAIL_TOKEN_KATERINA }}
-        run: |
-          python3 -c "
-          import os, json, yaml
-          env = {
-            'ANTHROPIC_API_KEY': os.environ['ANTHROPIC_API_KEY'],
-            'GMAIL_TOKEN_ROBERT': os.environ['GMAIL_TOKEN_ROBERT'],
-            'GMAIL_TOKEN_KATERINA': os.environ['GMAIL_TOKEN_KATERINA'],
-          }
-          with open('/tmp/env.yaml', 'w') as f:
-            yaml.dump(env, f, default_flow_style=False)
-          "
-
       - name: Deploy
         run: |
           gcloud functions deploy gmail-routine \
@@ -52,7 +35,8 @@ jobs:
             --entry-point=run_gmail_routine \
             --trigger-http \
             --no-allow-unauthenticated \
-            --env-vars-file=/tmp/env.yaml
+            --set-env-vars="ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" \
+            --set-secrets="GMAIL_TOKEN_ROBERT=GMAIL_TOKEN_ROBERT:latest,GMAIL_TOKEN_KATERINA=GMAIL_TOKEN_KATERINA:latest"
 
       - name: Print URL
         run: |
