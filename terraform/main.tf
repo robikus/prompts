@@ -15,7 +15,7 @@ terraform {
   # Pre-create this bucket once:
   #   gcloud storage buckets create gs://YOUR_TF_STATE_BUCKET --project=YOUR_PROJECT_ID
   backend "gcs" {
-    bucket = "YOUR_TF_STATE_BUCKET"
+    bucket = "myai-492320-tf-state"
     prefix = "gmail-routine"
   }
 }
