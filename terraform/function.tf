@@ -1,9 +1,3 @@
-# Import existing function created outside Terraform:
-#   terraform import google_cloudfunctions2_function.gmail_routine projects/myai-492320/locations/us-central1/functions/gmail-routine
-import {
-  to = google_cloudfunctions2_function.gmail_routine
-  id = "projects/myai-492320/locations/us-central1/functions/gmail-routine"
-}
 
 # Zip the function source; the MD5 in the object name forces redeploy on code changes
 data "archive_file" "function_source" {
