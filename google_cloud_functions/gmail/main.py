@@ -129,7 +129,7 @@ def fetch_emails(service, query):
         })
     return emails
 
-# ── Claude summarization ──────────────────────────────────────────────────────
+# ── Claude summarization ───────────────────────────────────────────────────
 
 def build_html_via_claude(results, account, api_key):
     client = anthropic.Anthropic(api_key=api_key)
