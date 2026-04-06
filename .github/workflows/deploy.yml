@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'google_cloud_functions/gmail/**'
+      - 'terraform/**'
   workflow_dispatch:
 
 jobs:
@@ -25,22 +26,29 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Deploy
-        run: |
-          gcloud functions deploy gmail-routine \
-            --gen2 \
-            --runtime=python312 \
-            --region=us-central1 \
-            --source=google_cloud_functions/gmail \
-            --entry-point=run_gmail_routine \
-            --trigger-http \
-            --no-allow-unauthenticated \
-            --set-env-vars="ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" \
-            --set-secrets="GMAIL_TOKEN_ROBERT=GMAIL_TOKEN_ROBERT:latest,GMAIL_TOKEN_KATERINA=GMAIL_TOKEN_KATERINA:latest"
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.5"
 
-      - name: Print URL
-        run: |
-          gcloud functions describe gmail-routine \
-            --gen2 \
-            --region=us-central1 \
-            --format="value(serviceConfig.uri)"
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform
+        env:
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: terraform
+        env:
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: terraform apply -auto-approve tfplan
+
+      - name: Print Function URL
+        working-directory: terraform
+        run: terraform output -raw function_url
